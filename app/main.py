@@ -4,10 +4,6 @@ from datetime import datetime
 def main(page: ft.Page):
     page.title = "Admin Stock"
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.window_minimizable = False
-    page.window_maximizable = False
     page.scroll = ft.ScrollMode.HIDDEN
 
     # Armazena os dados dos itens
@@ -15,10 +11,10 @@ def main(page: ft.Page):
 
     def add_tile_to_page(name: str, date: str, description: str):
         # Função para remover o tile
-        def remove_tile(e):
+        def remove_tile(e, item_modal):
             items_data.remove((tile, name, date, description))
             page.remove(tile)
-            page.close(item_details_modal)
+            page.close(item_modal)
             page.update()
 
         # Função para exibir o modal com detalhes do item
@@ -33,7 +29,7 @@ def main(page: ft.Page):
                     ],
                 ),
                 actions=[
-                    ft.TextButton("Delete", on_click=remove_tile, style=ft.ButtonStyle(color=ft.colors.RED)),
+                    ft.TextButton("Delete", on_click=lambda e: remove_tile(e, item_details_modal), style=ft.ButtonStyle(color=ft.colors.RED)),
                     ft.TextButton("Close", on_click=lambda _: page.close(item_details_modal)),
                 ],
             )
