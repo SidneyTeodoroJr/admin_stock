@@ -25,6 +25,14 @@ def create_table():
     conn.close()
     print("Tabela 'items' criada ou já existe.")
 
+def insert_item_to_db(name, description, quantity):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO items (name, description, quantity) VALUES (?, ?, ?)', (name, description, quantity))
+    conn.commit()
+    conn.close()
+    print(f"Item '{name}' adicionado ao banco de dados.")
+
 def delete_item_from_db(item_id):
     conn = create_connection()
     cursor = conn.cursor()
@@ -32,6 +40,14 @@ def delete_item_from_db(item_id):
     conn.commit()
     conn.close()
     print(f"Item com id {item_id} deletado do banco de dados.")
+
+def delete_all_items_from_db():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM items')
+    conn.commit()
+    conn.close()
+    print("Todos os itens foram deletados do banco de dados.")
 
 def get_items_from_db():
     conn = create_connection()
