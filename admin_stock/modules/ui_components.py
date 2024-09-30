@@ -1,7 +1,7 @@
 import flet as ft
 from datetime import datetime
 from urllib.request import urlopen
-import importlib.util  # Adicione esta linha
+import importlib.util  # Importação do importlib para carregar módulos dinamicamente
 
 def import_db_utils():
     db_utils_url = "https://raw.githubusercontent.com/SidneyTeodoroJr/admin_stock/main/admin_stock/modules/db_utils.py"
