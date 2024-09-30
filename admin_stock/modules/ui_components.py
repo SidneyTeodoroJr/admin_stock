@@ -1,8 +1,7 @@
 import flet as ft
 from datetime import datetime
-
-# Importa as funções diretamente de db_utils
 from urllib.request import urlopen
+import importlib.util  # Adicione esta linha
 
 def import_db_utils():
     db_utils_url = "https://raw.githubusercontent.com/SidneyTeodoroJr/admin_stock/main/admin_stock/modules/db_utils.py"
