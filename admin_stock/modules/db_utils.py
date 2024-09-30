@@ -1,39 +1,43 @@
 import sqlite3
 
-def get_db_connection():
-    return sqlite3.connect('inventory.db')
+DB_NAME = 'inventory.db'
+
+def create_connection():
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        print(f"Conexão bem-sucedida com {DB_NAME}.")
+        return conn
+    except sqlite3.Error as e:
+        print(f"Erro ao conectar ao banco de dados: {e}")
 
 def create_table():
-    with get_db_connection() as conn:
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                date_added TEXT NOT NULL,
-                description TEXT
-            )
-        ''')
-        conn.commit()
-
-def add_item_to_db(name, date_added, description):
-    with get_db_connection() as conn:
-        conn.execute('''
-            INSERT INTO items (name, date_added, description)
-            VALUES (?, ?, ?)
-        ''', (name, date_added, description))
-        conn.commit()
-
-def get_items_from_db():
-    with get_db_connection() as conn:
-        cursor = conn.execute('SELECT id, name, date_added, description FROM items')
-        return [{'id': row[0], 'name': row[1], 'date_added': row[2], 'description': row[3]} for row in cursor.fetchall()]
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT,
+        quantity INTEGER
+    )
+    ''')
+    conn.commit()
+    conn.close()
+    print("Tabela 'items' criada ou já existe.")
 
 def delete_item_from_db(item_id):
-    with get_db_connection() as conn:
-        conn.execute('DELETE FROM items WHERE id = ?', (item_id,))
-        conn.commit()
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM items WHERE id = ?', (item_id,))
+    conn.commit()
+    conn.close()
+    print(f"Item com id {item_id} deletado do banco de dados.")
 
-def delete_all_items_from_db():
-    with get_db_connection() as conn:
-        conn.execute('DELETE FROM items')
-        conn.commit()
+def get_items_from_db():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM items')
+    rows = cursor.fetchall()
+    conn.close()
+    print(f"{len(rows)} itens carregados do banco de dados.")
+    return [{'id': row[0], 'name': row[1], 'description': row[2], 'quantity': row[3]} for row in rows]
