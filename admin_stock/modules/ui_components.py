@@ -1,18 +1,6 @@
 import flet as ft
 from datetime import datetime
-from urllib.request import urlopen
-import importlib.util  # Importação do importlib para carregar módulos dinamicamente
-
-def import_db_utils():
-    db_utils_url = "https://raw.githubusercontent.com/SidneyTeodoroJr/admin_stock/main/admin_stock/modules/db_utils.py"
-    source_code = urlopen(db_utils_url).read().decode('utf-8')
-    module_name = "db_utils"
-    spec = importlib.util.spec_from_loader(module_name, loader=None)
-    module = importlib.util.module_from_spec(spec)
-    exec(source_code, module.__dict__)
-    return module
-
-db_utils = import_db_utils()
+from modules.db_utils import add_item_to_db, get_items_from_db  # Importar funções do banco de dados
 
 def create_modal_button(text, on_click, color):
     return ft.TextButton(text, on_click=on_click, style=ft.ButtonStyle(color=color))
@@ -88,8 +76,8 @@ def create_add_item_modal(add_item_callback, page):
             page.update()
         else:
             try:
-                db_utils.add_item_to_db(name, date_added, description)
-                item = db_utils.get_items_from_db()[-1]
+                add_item_to_db(name, date_added, description)
+                item = get_items_from_db()[-1]
                 add_item_callback(item)
                 page.close(modal_user)
             except Exception as ex:
